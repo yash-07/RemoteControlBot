@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -50,6 +51,8 @@ public class JoystickActivity extends AppCompatActivity {
     private boolean isJoystickToRight = true;
     private ImageView swapControlButton;
 
+    private int buttonMargin;
+
     // AlertDialog
     private View dialogView;
     private TextInputEditText ipAddressText;
@@ -70,8 +73,8 @@ public class JoystickActivity extends AppCompatActivity {
         rootConstraintSet.clear(R.id.button_view, ConstraintSet.START);
         rootConstraintSet.clear(R.id.button_view, ConstraintSet.END);
 
-        rootConstraintSet.setMargin(R.id.button_view, ConstraintSet.START, 16);
-        rootConstraintSet.setMargin(R.id.button_view, ConstraintSet.END, 16);
+        rootConstraintSet.setMargin(R.id.button_view, ConstraintSet.START, buttonMargin);
+        rootConstraintSet.setMargin(R.id.button_view, ConstraintSet.END, buttonMargin);
 
         if (isJoystickToRight) {
             rootConstraintSet.connect(R.id.joystick_view, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
@@ -86,6 +89,18 @@ public class JoystickActivity extends AppCompatActivity {
         rootConstraintSet.applyTo(rootView);
 
         isJoystickToRight = !isJoystickToRight;
+    }
+
+    private void setupRoboSoccer() {
+
+    }
+
+    private void setupShellShock() {
+
+    }
+
+    private void setupRobowars() {
+
     }
 
     @Override
@@ -117,6 +132,8 @@ public class JoystickActivity extends AppCompatActivity {
             }
         });
 
+        buttonMargin = ((ViewGroup.MarginLayoutParams) secondaryAction.getLayoutParams()).bottomMargin;
+
         editConnection = findViewById(R.id.edit_connection);
 
         swapControlButton = findViewById(R.id.controls_swap_button);
@@ -133,6 +150,7 @@ public class JoystickActivity extends AppCompatActivity {
         dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_connectivity, null, false);
 
         ipAddressText = dialogView.findViewById(R.id.ip_address_textview);
+
         submitButton = dialogView.findViewById(R.id.submit_button);
 
         playerActionTitle = dialogView.findViewById(R.id.player_selection_title);

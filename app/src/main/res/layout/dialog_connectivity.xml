@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
+    style="@style/AppTheme"
     android:padding="12dp">
 
     <TextView
@@ -13,7 +13,6 @@
         android:fontFamily="sans-serif-condensed"
         android:padding="8dp"
         android:text="Connection Config"
-        android:textColor="#000"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/ip_address_textview"
@@ -66,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="?selectableItemBackground"
             android:padding="16dp"
             android:text="Attack" />
 
@@ -75,7 +73,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="?selectableItemBackground"
             android:padding="16dp"
             android:text="Defense" />
 
