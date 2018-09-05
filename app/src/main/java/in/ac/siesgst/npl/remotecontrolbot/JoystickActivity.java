@@ -1,6 +1,9 @@
 package in.ac.siesgst.npl.remotecontrolbot;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -13,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -96,6 +100,7 @@ public class JoystickActivity extends AppCompatActivity {
     private Event event;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,11 +120,18 @@ public class JoystickActivity extends AppCompatActivity {
         secondaryAction = findViewById(R.id.button_view);
         secondaryAction.setImageResource(event.getButtonDrawable());
 
-        secondaryAction.setOnClickListener(new View.OnClickListener() {
+        secondaryAction.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                // TODO UDPSender impl
-                Toast.makeText(JoystickActivity.this, "Secondary Action", Toast.LENGTH_SHORT).show();
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    new Thread(new UDPSender(9)).start();
+                    secondaryAction.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80000000")));
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    new Thread(new UDPSender(8)).start();
+                    secondaryAction.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80FFFFFF")));
+                }
+                return true;
             }
         });
 
