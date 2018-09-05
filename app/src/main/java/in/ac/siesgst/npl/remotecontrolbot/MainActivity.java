@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public static final Event[] events = new Event[]{
             new Event(ROBO_SOCCER, R.drawable.robosoccer, R.drawable.kick, R.drawable.robosoccer_joy),
             new Event(SHELL_SHOCK, R.drawable.shellshock, R.drawable.bullet, R.drawable.shellshock_joy),
-            new Event(ROBO_WARS, R.drawable.robosoccer, R.drawable.bullet, R.drawable.robowars_joy)
+            new Event(ROBO_WARS, R.drawable.robowars, R.drawable.bullet, R.drawable.robowars_joy)
     };
     private RecyclerView recyclerView;
 
@@ -35,19 +36,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    static class Event {
-        private String name;
-        private int backgroundDrawable;
-        private int buttonDrawable;
-        private int joyDrawable;
-
-        public Event(String name, int backgroundDrawable, int buttonDrawable, int joyDrawable) {
-            this.name = name;
-            this.backgroundDrawable = backgroundDrawable;
-            this.buttonDrawable = buttonDrawable;
-            this.joyDrawable = joyDrawable;
-        }
-    }
 
     class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
         @Override
@@ -57,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, final int position) {
-            holder.eventName.setText(events[position].name);
+            holder.eventName.setText(events[position].getName());
             Glide.with(MainActivity.this)
-                    .load(events[position].backgroundDrawable)
+                    .load(events[position].getBackgroundDrawable())
                     .into(holder.eventBg);
             holder.bindViewHolder();
         }
@@ -85,10 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent joyIntent = new Intent(MainActivity.this, JoystickActivity.class);
-                        joyIntent.putExtra("name", events[getAdapterPosition()].name);
-                        joyIntent.putExtra("bg", events[getAdapterPosition()].backgroundDrawable);
-                        joyIntent.putExtra("button_bg", events[getAdapterPosition()].buttonDrawable);
-                        joyIntent.putExtra("joy_bg", events[getAdapterPosition()].joyDrawable);
+                        joyIntent.putExtra("event", new Gson().toJson(events[getAdapterPosition()]));
                         startActivity(joyIntent);
                     }
                 });

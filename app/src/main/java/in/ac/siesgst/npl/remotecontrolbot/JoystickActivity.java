@@ -22,6 +22,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,15 +39,13 @@ public class JoystickActivity extends AppCompatActivity {
 
     private String curr = "";
 
+    // UI Elements in Joystick Activity
     private JoystickView joystickView;
-    private int backgroundDrawable;
-    private int buttonDrawable;
-    private int joyDrawable;
     private ImageView secondaryAction;
-    private String eventName;
     private TextView eventTitle;
     private ConstraintLayout rootView;
     private TextView editConnection;
+
     private SharedPreferenceManager sharedPreferenceManager;
 
     // Swap Controls
@@ -63,6 +64,7 @@ public class JoystickActivity extends AppCompatActivity {
     private RadioButton defenseRadio;
     private AlertDialog connectivityDialog;
 
+    // Swaps the JoystickView and Secondary Action Button
     private void swapControls() {
         ConstraintSet rootConstraintSet = new ConstraintSet();
         rootConstraintSet.clone(rootView);
@@ -91,39 +93,28 @@ public class JoystickActivity extends AppCompatActivity {
         isJoystickToRight = !isJoystickToRight;
     }
 
-    private void setupRoboSoccer() {
+    private Event event;
 
-    }
-
-    private void setupShellShock() {
-
-    }
-
-    private void setupRobowars() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joystick);
 
-        eventName = getIntent().getStringExtra("name");
-        backgroundDrawable = getIntent().getIntExtra("bg", R.drawable.shellshock);
-        buttonDrawable = getIntent().getIntExtra("button_bg", R.drawable.bullet);
-        joyDrawable = getIntent().getIntExtra("joy_bg", R.drawable.robowars_joy);
+        event = new Gson().fromJson(getIntent().getStringExtra("event"), new TypeToken<Event>(){}.getType());
 
         eventTitle = findViewById(R.id.joystick_event_title);
-        eventTitle.setText(eventName);
+        eventTitle.setText(event.getName());
 
         rootView = findViewById(R.id.joystick_root_view);
-        rootView.setBackgroundResource(backgroundDrawable);
+        rootView.setBackgroundResource(event.getBackgroundDrawable());
 
         joystickView = findViewById(R.id.joystick_view);
-        joystickView.setBackgroundResource(joyDrawable);
+        joystickView.setBackgroundResource(event.getJoyDrawable());
 
         secondaryAction = findViewById(R.id.button_view);
-        secondaryAction.setImageResource(buttonDrawable);
+        secondaryAction.setImageResource(event.getButtonDrawable());
+
         secondaryAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,17 +140,17 @@ public class JoystickActivity extends AppCompatActivity {
 
         dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_connectivity, null, false);
 
+        // IP Addr InputView
         ipAddressText = dialogView.findViewById(R.id.ip_address_textview);
 
-        submitButton = dialogView.findViewById(R.id.submit_button);
-
+        // Player Strategy Stuff
         playerActionTitle = dialogView.findViewById(R.id.player_selection_title);
-
         playerActionGroup = dialogView.findViewById(R.id.player_selection_group);
-
         defenseRadio = dialogView.findViewById(R.id.strategy_defense);
-
         attackRadio = dialogView.findViewById(R.id.strategy_attack);
+
+        // Submit button
+        submitButton = dialogView.findViewById(R.id.submit_button);
 
         connectivityDialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
@@ -180,7 +171,7 @@ public class JoystickActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (!eventName.equals(MainActivity.ROBO_WARS)
+                if (!event.getName().equals(MainActivity.ROBO_WARS)
                         && !attackRadio.isChecked()
                         && !defenseRadio.isChecked()) {
                     Toast.makeText(JoystickActivity.this, "Please select a player strategy", Toast.LENGTH_SHORT).show();
@@ -188,6 +179,8 @@ public class JoystickActivity extends AppCompatActivity {
                 }
 
                 sharedPreferenceManager.createIpSession(ipAddress);
+
+                secondaryAction.setVisibility(attackRadio.isChecked() ? View.VISIBLE : View.GONE);
 
                 connectivityDialog.dismiss();
             }
@@ -204,14 +197,22 @@ public class JoystickActivity extends AppCompatActivity {
             }
         });
 
-        if (!eventName.equals(MainActivity.ROBO_WARS)) {
-            playerActionGroup.setVisibility(View.VISIBLE);
-            playerActionTitle.setVisibility(View.VISIBLE);
-            secondaryAction.setVisibility(View.VISIBLE);
-        } else {
-            playerActionGroup.setVisibility(View.GONE);
-            playerActionTitle.setVisibility(View.GONE);
-            secondaryAction.setVisibility(View.GONE);
+        switch(event.getName()) {
+            case MainActivity.ROBO_SOCCER:
+                playerActionGroup.setVisibility(View.VISIBLE);
+                playerActionTitle.setVisibility(View.VISIBLE);
+                secondaryAction.setVisibility(View.VISIBLE);
+                break;
+            case MainActivity.ROBO_WARS:
+                playerActionGroup.setVisibility(View.GONE);
+                playerActionTitle.setVisibility(View.GONE);
+                secondaryAction.setVisibility(View.GONE);
+                break;
+            case MainActivity.SHELL_SHOCK:
+                playerActionGroup.setVisibility(View.VISIBLE);
+                playerActionTitle.setVisibility(View.VISIBLE);
+                secondaryAction.setVisibility(View.VISIBLE);
+                break;
         }
 
         if (sharedPreferenceManager.isFirstRun()) {
