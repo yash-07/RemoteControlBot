@@ -124,11 +124,11 @@ public class JoystickActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    new Thread(new UDPSender(11)).start();
+                    new Thread(new UDPSender(12)).start();
                     secondaryAction.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80000000")));
                 }
                 else if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    new Thread(new UDPSender(10)).start();
+                    new Thread(new UDPSender(11)).start();
                     secondaryAction.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80FFFFFF")));
                 }
                 return true;
