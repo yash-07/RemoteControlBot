@@ -279,26 +279,6 @@ public class JoystickActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater mMenuInflater = getMenuInflater();
-        mMenuInflater.inflate(R.menu.mymenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.settings) {
-            Intent i = new Intent(JoystickActivity.this, SettingsActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.putExtra("ip_set", sharedPreferenceManager.isIpThere());
-            i.putExtra("ip", sharedPreferenceManager.getIp());
-            startActivity(i);
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onStop() {
 
         sharedPreferenceManager.closeIpSession();

@@ -1,17 +1,26 @@
 package in.ac.siesgst.npl.remotecontrolbot;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ROBO_SOCCER = "Robo Soccer";
     public static final String SHELL_SHOCK = "Shell Shock";
     public static final String ROBO_WARS = "Robo Wars";
+    private SharedPreferenceManager sharedPreferenceManager;
     public static final Event[] events = new Event[]{
             new Event(ROBO_SOCCER, R.drawable.robosoccer, R.drawable.kick, R.drawable.robosoccer_joy),
             new Event(SHELL_SHOCK, R.drawable.shellshock, R.drawable.bullet, R.drawable.shellshock_joy),
@@ -34,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new EventAdapter());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        sharedPreferenceManager = new SharedPreferenceManager(this);
+        getWindow().setStatusBarColor(Color.BLACK);
     }
 
 
@@ -80,4 +92,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater mMenuInflater = getMenuInflater();
+        mMenuInflater.inflate(R.menu.mymenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings) {
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.putExtra("ip_set", sharedPreferenceManager.isIpThere());
+            i.putExtra("ip", sharedPreferenceManager.getIp());
+            startActivity(i);
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

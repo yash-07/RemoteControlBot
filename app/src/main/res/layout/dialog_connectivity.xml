@@ -41,8 +41,6 @@
         android:paddingStart="8dp"
         android:paddingTop="12dp"
         android:text="Player Strategy"
-        android:textColor="@color/colorAccent"
-        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/player_selection_group"
         app:layout_constraintStart_toStartOf="parent"
